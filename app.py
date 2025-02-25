@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Directory to store downloaded MP3 files and cookies
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-COOKIES_FILE = os.path.join(STATIC_DIR, 'cookies.txt')
+COOKIES_FILE = os.path.join('cookies.txt')
 os.makedirs(STATIC_DIR, exist_ok=True)
 
 # yt-dlp configuration for downloading MP3 files
@@ -20,7 +20,7 @@ YDL_OPTIONS = {
     }],
     'outtmpl': os.path.join(STATIC_DIR, '%(id)s.%(ext)s'),
     'quiet': True,
-    'cookiefile': COOKIES_FILE if os.path.exists(COOKIES_FILE) else None,  # Use cookies if present
+    'cookiefile': "cookies.txt"
 }
 
 def get_video_id(url):
