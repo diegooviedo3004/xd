@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yt-dlp Web App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>yt-dlp Downloader</h1>
+        <form id="downloadForm" enctype="multipart/form-data">
+            <label for="url">Video URL:</label>
+            <input type="text" id="url" name="url" placeholder="https://youtube.com/watch?v=..." required>
+            
+            <label for="cookies">Cookies File:</label>
+            <input type="file" id="cookies" name="cookies" accept=".txt" required>
+            
+            <button type="submit">Download</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Downloading...';
+
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p>${data.message}</p><pre>${data.output}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<p>Error: ${data.error}</p><pre>${data.details || ''}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p>Request failed: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
