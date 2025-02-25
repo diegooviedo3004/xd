@@ -1,17 +1,25 @@
-# Use Python 3.9 slim as the base image for a smaller footprint
-FROM python:3.9-slim
+# Use official Python runtime as a parent image
+FROM python:3.11-slim
 
-# Copy all project files into the container
-COPY . /app
-
-# Set the working directory
+# Set working directory in the container
 WORKDIR /app
 
-# Install Python dependencies from requirements.txt
-RUN pip install -r requirements.txt
+# Install system dependencies (ffmpeg for yt-dlp)
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Expose port 5000 for the Flask app
+# Copy requirements file
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose port 5000 for Flask
 EXPOSE 5000
 
-# Run the application with Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+# Command to run the app
+CMD ["python", "app.py"]
