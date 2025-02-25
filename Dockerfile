@@ -1,9 +1,6 @@
 # Use Python 3.9 slim as the base image for a smaller footprint
 FROM python:3.9-slim
 
-# Install ffmpeg (includes ffprobe)
-RUN apt-get update && apt-get install -y ffmpeg
-
 # Copy all project files into the container
 COPY . /app
 
